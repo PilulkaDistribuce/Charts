@@ -500,8 +500,9 @@ open class BarChartRenderer: BarLineScatterCandleBubbleRenderer
             startPoint = CGPoint(x: barRect.minX, y: barRect.midY)
             endPoint = CGPoint(x: barRect.maxX, y: barRect.midY)
         }
-       
-        let bezierPath = UIBezierPath(roundedRect: barRect, cornerRadius: barRect.width / 2)
+        
+        let cornerRadius: CGFloat = barRect.width / 2
+        let bezierPath = UIBezierPath(roundedRect: barRect, byRoundingCorners: [.topLeft , .topRight], cornerRadii: CGSize(width: cornerRadius, height: cornerRadius))
         context.addPath(bezierPath.cgPath)
         context.clip()
         context.drawLinearGradient(gradient!, start: startPoint, end: endPoint, options: [])
@@ -858,8 +859,13 @@ open class BarChartRenderer: BarLineScatterCandleBubbleRenderer
                 prepareBarHighlight(x: e.x, y1: y1, y2: y2, barWidthHalf: barData.barWidth / 2.0, trans: trans, rect: &barRect)
                 
                 setHighlightDrawPos(highlight: high, barRect: barRect)
-                
-                context.fill(barRect)
+                let cornerRadius: CGFloat = barRect.width / 2
+                let path: CGPath = UIBezierPath(roundedRect: barRect, byRoundingCorners: [.topLeft , .topRight], cornerRadii: CGSize(width: cornerRadius, height: cornerRadius)).cgPath
+
+                context.addPath(path)
+                context.setFillColor(set.highlightColor.cgColor)
+                context.closePath()
+                context.fillPath()
             }
         }
         
